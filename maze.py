@@ -1,4 +1,4 @@
-import time
+import time, random
 from cell import Cell
 
 class Maze:
@@ -26,7 +26,17 @@ class Maze:
         for col in range(self._num_cols):
             row_cells = []
             for row in range(self._num_rows):
-                row_cells.append(Cell(self._win))
+                cell = Cell(self._win)
+                # r = random.random()
+                # if r < 0.25:
+                #     cell.has_left_wall = False
+                # elif r < 0.5:
+                #     cell.has_top_wall = False
+                # elif r < 0.75:
+                #     cell.has_right_wall = False
+                # else:
+                #     cell.has_bottom_wall = False
+                row_cells.append(cell)
             self._cells.append(row_cells)
         for col in range(self._num_cols):
             for row in range(self._num_rows):
