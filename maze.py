@@ -21,27 +21,53 @@ class Maze:
         self._cell_size_y = cell_size_y
         self._win = win
         self._cells = []
+        self._animate_delay = 0.01  # quick construction
         self._create_cells()
         self._break_entrance_and_exit()
         if seed is not None:
             random.seed(seed)
+        self._animate_delay = 0.05  # slower "mazing"
         self._break_walls_r(0, 0)
         self._reset_cells_visited()
+        self._animate_delay = 0.075 # nice and slow solving
+
+    def solve(self):
+        return self._solve_r(0, 0)
+    
+    def _solve_r(self, i, j):
+        self._animate()
+        self._cells[i][j]._visited = True
+        if i == self._num_cols - 1 and j == self._num_rows - 1:
+            return True
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        for direction in directions:
+            ni = direction[0] + i
+            nj = direction[1] + j
+            if ni < 0 or ni >= self._num_cols or nj < 0 or nj >= self._num_rows:
+                continue
+            if ni > i and self._cells[i][j].has_right_wall: # also checking neighbor cell is redundant
+                continue
+            if ni < i and self._cells[i][j].has_left_wall:
+                continue
+            if nj > j and self._cells[i][j].has_bottom_wall:
+                continue
+            if nj < j and self._cells[i][j].has_top_wall:
+                continue
+            if self._cells[ni][nj]._visited:
+                continue
+            self._cells[i][j].draw_move(self._cells[ni][nj])
+            result = self._solve_r(ni, nj)
+            if result:
+                return True
+            self._cells[i][j].draw_move(self._cells[ni][nj], True)
+        return False
+
 
     def _create_cells(self):
         for col in range(self._num_cols):
             row_cells = []
             for row in range(self._num_rows):
                 cell = Cell(self._win)
-                # r = random.random()
-                # if r < 0.25:
-                #     cell.has_left_wall = False
-                # elif r < 0.5:
-                #     cell.has_top_wall = False
-                # elif r < 0.75:
-                #     cell.has_right_wall = False
-                # else:
-                #     cell.has_bottom_wall = False
                 row_cells.append(cell)
             self._cells.append(row_cells)
         for col in range(self._num_cols):
@@ -67,7 +93,6 @@ class Maze:
         self._draw_cell(x, y)
 
     def _break_walls_r(self, i, j):
-        #print(i, j)
         self._cells[i][j]._visited = True
         while True:
             to_visit_indices = self._list_unvisited_neighbors(i, j)
@@ -112,4 +137,4 @@ class Maze:
         if self._win is None:
             return
         self._win.redraw()
-        time.sleep(0.02)
+        time.sleep(self._animate_delay)

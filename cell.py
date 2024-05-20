@@ -42,7 +42,7 @@ class Cell:
         x_center2 = (to_cell._x1 + to_cell._x2) // 2
         y_center2 = (to_cell._y1 + to_cell._y2) // 2
 
-        fill_color = "red"
+        fill_color = "blue"     # I have red–green color blindness...
         if undo:
             fill_color = "gray"
 
