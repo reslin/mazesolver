@@ -38,6 +38,7 @@ def main():
     # c3.draw_move(c4, True)
 
     m = Maze(margin, margin, rows, cols, cell_size_x, cell_size_y, win)
+    m._break_entrance_and_exit()
 
     win.wait_for_close()
 
