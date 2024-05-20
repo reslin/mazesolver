@@ -26,6 +26,7 @@ class Maze:
         if seed is not None:
             random.seed(seed)
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _create_cells(self):
         for col in range(self._num_cols):
@@ -58,8 +59,6 @@ class Maze:
         self._animate()
 
     def _break_entrance_and_exit(self):
-        if self._win is None:
-            return
         self._cells[0][0].has_top_wall = False
         self._draw_cell(0, 0)
         x = self._num_cols - 1
@@ -68,7 +67,7 @@ class Maze:
         self._draw_cell(x, y)
 
     def _break_walls_r(self, i, j):
-        print(i, j)
+        #print(i, j)
         self._cells[i][j]._visited = True
         while True:
             to_visit_indices = self._list_unvisited_neighbors(i, j)
@@ -92,6 +91,10 @@ class Maze:
                 self._cells[i][nj].has_bottom_wall = False
             self._break_walls_r(ni, nj)
 
+    def _reset_cells_visited(self):
+        for col in range(self._num_cols):
+            for row in range(self._num_rows):
+                self._cells[col][row]._visited = False
 
     def _list_unvisited_neighbors(self, i, j):
         to_visit_indices = []
