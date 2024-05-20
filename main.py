@@ -7,7 +7,7 @@ def main():
     win_height = 600
     margin = 50
     rows = 12
-    cols = 15
+    cols = 16
     cell_size_x = (win_width - 2 * margin) // cols
     cell_size_y = (win_height - 2 * margin) // rows
 

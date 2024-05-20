@@ -11,6 +11,7 @@ class Maze:
         cell_size_x,
         cell_size_y,
         win=None,
+        seed=None
     ):
         self._x1 = x1
         self._y1 = y1
@@ -22,6 +23,9 @@ class Maze:
         self._cells = []
         self._create_cells()
         self._break_entrance_and_exit()
+        if seed is not None:
+            random.seed(seed)
+        self._break_walls_r(0, 0)
 
     def _create_cells(self):
         for col in range(self._num_cols):
@@ -63,8 +67,46 @@ class Maze:
         self._cells[x][y].has_bottom_wall = False
         self._draw_cell(x, y)
 
+    def _break_walls_r(self, i, j):
+        print(i, j)
+        self._cells[i][j]._visited = True
+        while True:
+            to_visit_indices = self._list_unvisited_neighbors(i, j)
+            if len(to_visit_indices) == 0:
+                self._draw_cell(i, j)
+                return
+            rnd_idx = random.randrange(len(to_visit_indices))
+            ni = to_visit_indices[rnd_idx][0]
+            nj = to_visit_indices[rnd_idx][1]
+            if ni > i:
+                self._cells[i][j].has_right_wall = False
+                self._cells[ni][j].has_left_wall = False
+            elif ni < i:
+                self._cells[i][j].has_left_wall = False
+                self._cells[ni][j].has_right_wall = False
+            elif nj > j:
+                self._cells[i][j].has_bottom_wall = False
+                self._cells[i][nj].has_top_wall = False
+            else:
+                self._cells[i][j].has_top_wall = False
+                self._cells[i][nj].has_bottom_wall = False
+            self._break_walls_r(ni, nj)
+
+
+    def _list_unvisited_neighbors(self, i, j):
+        to_visit_indices = []
+        delta_indices = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        for idx in delta_indices:
+            ni = idx[0] + i
+            nj = idx[1] + j
+            if ni < 0 or ni >= self._num_cols or nj < 0 or nj >= self._num_rows:
+                continue
+            if not self._cells[ni][nj]._visited:
+                to_visit_indices.append((ni, nj))
+        return to_visit_indices
+
     def _animate(self):
         if self._win is None:
             return
         self._win.redraw()
-        time.sleep(0.005)
+        time.sleep(0.02)
