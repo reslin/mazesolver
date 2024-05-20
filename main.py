@@ -3,7 +3,15 @@ from cell import Cell
 from maze import Maze
 
 def main():
-    win = Window(800, 600)
+    win_width = 800
+    win_height = 600
+    margin = 50
+    rows = 12
+    cols = 15
+    cell_size_x = (win_width - 2 * margin) // cols
+    cell_size_y = (win_height - 2 * margin) // rows
+
+    win = Window(win_width, win_height)
 
     # c1 = Cell(win)
     # c1.has_right_wall = False
@@ -29,7 +37,7 @@ def main():
 
     # c3.draw_move(c4, True)
 
-    m = Maze(50, 50, 10, 10, 50, 50, win)
+    m = Maze(margin, margin, rows, cols, cell_size_x, cell_size_y, win)
 
     win.wait_for_close()
 
